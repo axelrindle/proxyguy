@@ -59,13 +59,15 @@ func main() {
 		SortingFunc:            func(s []string) {},
 	})
 
-	switch strings.ToLower(opts.verbosity) {
-	case "debug":
-		logger.SetLevel(logrus.DebugLevel)
-	case "trace":
-		logger.SetLevel(logrus.TraceLevel)
-	default:
-		logger.Warnf("Invalid verbosity level \"%s\"!", opts.verbosity)
+	if opts.verbosity != "" {
+		switch strings.ToLower(opts.verbosity) {
+		case "debug":
+			logger.SetLevel(logrus.DebugLevel)
+		case "trace":
+			logger.SetLevel(logrus.TraceLevel)
+		default:
+			logger.Warnf("Invalid verbosity level \"%s\"!", opts.verbosity)
+		}
 	}
 
 	config := &config.Config{Logger: logger, File: &opts.configFile}
