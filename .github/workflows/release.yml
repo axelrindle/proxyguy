@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  GO_VERSION: '1.21'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Build
+        run: make build
+        env:
+          OUTPUT: dist/${{ github.event.repository.name }}-${{ github.ref_name }}
+
+      - id: extract-changelog
+        uses: sean0x42/markdown-extract@v2
+        with:
+          file: CHANGELOG.md
+          pattern: ${{ github.ref_name }}
+          no-print-matched-heading: true
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ !env.ACT }}
+        with:
+          body: |
+            ## Changelog
+            ${{ steps.extract-changelog.outputs.markdown }}
+          files: |
+            dist/*

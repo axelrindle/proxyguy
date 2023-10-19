@@ -1,0 +1,70 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Config",
+    "definitions": {
+        "Config": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "pac": {
+                    "type": "string",
+                    "examples": [
+                        "http://proxypac.corp.lan/proxy.pac"
+                    ]
+                },
+                "timeout": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "proxy": {
+                    "$ref": "#/definitions/Proxy"
+                },
+                "server": {
+                    "$ref": "#/definitions/Server"
+                }
+            },
+            "required": [
+                "pac"
+            ],
+            "title": "proxyguy Config"
+        },
+        "Proxy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "override": {
+                    "type": "string"
+                },
+                "ignore": {
+                    "type": "string",
+                    "default": "localhost,127.0.0.1"
+                },
+                "determine-url": {
+                    "type": "string",
+                    "format": "uri",
+                    "default": "https://ubuntu.com",
+                    "qt-uri-protocols": [
+                        "http",
+                        "https"
+                    ]
+                }
+            },
+            "title": "Proxy"
+        },
+        "Server": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "default": "0.0.0.0"
+                },
+                "port": {
+                    "type": "integer",
+                    "default": 1337
+                }
+            },
+            "title": "Server"
+        }
+    }
+}
