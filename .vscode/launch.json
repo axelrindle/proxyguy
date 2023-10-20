@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/main.go",
             "args": [
                 "-config", "./config.local.yml",
-                "-vv"
+                "-verbosity", "trace"
             ]
         },
         {
@@ -24,7 +24,7 @@
             "args": [
                 "-config", "./config.local.yml",
                 "-server",
-                "-vv"
+                "-verbosity", "trace"
             ]
         }
     ]
