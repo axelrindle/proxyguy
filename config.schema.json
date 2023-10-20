@@ -21,6 +21,9 @@
                 },
                 "server": {
                     "$ref": "#/definitions/Server"
+                },
+                "modules": {
+                    "$ref": "#/definitions/Modules"
                 }
             },
             "required": [
@@ -65,6 +68,13 @@
                 }
             },
             "title": "Server"
+        },
+        "Modules": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+            },
+            "title": "Modules"
         }
     }
 }

@@ -11,9 +11,13 @@ type StructureProxy struct {
 	Determine string `yaml:"determine-url" env:"DETERMINE" env-default:"https://ubuntu.com"`
 }
 
+type StructureModules struct {
+}
+
 type Structure struct {
-	PacUrl  string          `yaml:"pac" env:"PAC"`
-	Timeout uint            `yaml:"timeout" env:"TIMEOUT" env-default:"1000"`
-	Proxy   StructureProxy  `yaml:"proxy" env-prefix:"PROXY_"`
-	Server  StructureServer `yaml:"server" env-prefix:"SERVER_"`
+	PacUrl  string           `yaml:"pac" env:"PAC"`
+	Timeout uint             `yaml:"timeout" env:"TIMEOUT" env-default:"1000"`
+	Proxy   StructureProxy   `yaml:"proxy" env-prefix:"PROXY_"`
+	Server  StructureServer  `yaml:"server" env-prefix:"SERVER_"`
+	Modules StructureModules `yaml:"modules"`
 }

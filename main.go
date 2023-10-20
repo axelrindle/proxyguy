@@ -2,30 +2,17 @@ package main
 
 import (
 	"flag"
+	"net/url"
 	"os"
 	"strings"
-	"text/template"
 
 	"github.com/axelrindle/proxyguy/config"
+	"github.com/axelrindle/proxyguy/modules"
 	"github.com/axelrindle/proxyguy/pac"
 	"github.com/axelrindle/proxyguy/server"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
-
-type Exports struct {
-	Host    string
-	NoProxy string
-}
-
-const exportsTemplate = `
-export http_proxy="http://{{.Host}}"
-export https_proxy="http://{{.Host}}"
-export no_proxy="{{.NoProxy}}"
-export HTTP_PROXY="http://{{.Host}}"
-export HTTPS_PROXY="http://{{.Host}}"
-export NO_PROXY="{{.NoProxy}}"
-`
 
 // flags
 type Options struct {
@@ -82,14 +69,37 @@ func main() {
 		server := &server.Server{Logger: logger, Config: cfg}
 		server.Start()
 	} else {
-		url, tmpl := Process(logger, cfg)
+		u, err := FindProxy(logger, cfg)
+		if err != nil {
+			logger.Fatal(err)
+		}
 
-		data := &Exports{Host: url, NoProxy: cfg.Proxy.NoProxy}
-		tmpl.Execute(os.Stdout, data)
+		data := &modules.Exports{Host: u.Hostname(), Port: u.Port(), NoProxy: cfg.Proxy.NoProxy}
+
+		mdls := []modules.Module{
+			*modules.TemplateMain,
+		}
+
+		for _, mdl := range mdls {
+			if !mdl.IsEnabled(cfg.Modules) {
+				continue
+			}
+
+			var theData modules.Exports
+			if mdl.Preprocess != nil {
+				theData = mdl.Preprocess(*data)
+			} else {
+				theData = *data
+			}
+
+			if !modules.Process(mdl, theData) {
+				logger.Errorf("Failed parsing template \"%s\"!", mdl.Name)
+			}
+		}
 	}
 }
 
-func Process(logger *logrus.Logger, cfg *config.Structure) (string, *template.Template) {
+func FindProxy(logger *logrus.Logger, cfg *config.Structure) (*url.URL, error) {
 	p := &pac.Pac{Logger: logger, Config: cfg}
 
 	if !p.CheckConnectivity() {
@@ -107,13 +117,8 @@ func Process(logger *logrus.Logger, cfg *config.Structure) (string, *template.Te
 		logger.Fatalln("Found no available proxy endpoint!")
 	}
 
-	url := pac.TrimProxy(parts[0]) // TODO: Make sure not DIRECT
-	logger.Debugln("Using \"" + url + "\" as proxy endpoint.")
+	u := pac.TrimProxy(parts[0]) // TODO: Make sure not DIRECT
+	logger.Debugln("Using \"" + u + "\" as proxy endpoint.")
 
-	tmpl, err := template.New("exports").Parse(exportsTemplate)
-	if err != nil {
-		logger.Fatalln(err)
-	}
-
-	return url, tmpl
+	return url.Parse("http://" + u)
 }

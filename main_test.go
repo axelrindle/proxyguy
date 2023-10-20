@@ -60,9 +60,9 @@ func TestProcessing(t *testing.T) {
 		},
 	}
 
-	url, _ := Process(logger, cfg)
+	url, _ := FindProxy(logger, cfg)
 
-	if url != "proxy.example.com:8080" {
+	if url.Host != "proxy.example.com:8080" {
 		t.Fatal("Invalid proxy endpoint returned!")
 	}
 }
