@@ -78,6 +78,7 @@ func main() {
 
 		mdls := []modules.Module{
 			*modules.TemplateMain,
+			*modules.TemplateMaven,
 		}
 
 		for _, mdl := range mdls {
