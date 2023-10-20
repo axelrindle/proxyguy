@@ -45,7 +45,7 @@ func (s *Server) Start() {
 	s.proxy.OnRequest().DoFunc(s.http)
 	s.proxy.ConnectDial = s.connectDial
 
-	address := fmt.Sprintf("%s:%v", *s.Config.Server.Address, s.Config.Server.Port)
+	address := fmt.Sprintf("%s:%v", s.Config.Server.Address, s.Config.Server.Port)
 	s.Logger.Println("Starting proxy server on " + address + "…")
 
 	server := http.Server{
