@@ -18,7 +18,7 @@ run: build
 run-local:
 	go run . -config ./config.test.yml
 
-install: build
-	if [ ! -d /etc/proxyguy ]; then mkdir /etc/proxyguy; fi
+install:
 	install dist/proxyguy /usr/bin
+	if [ ! -d /etc/proxyguy ]; then mkdir /etc/proxyguy; fi
 	if [ ! -f /etc/proxyguy/config.yaml ]; then install -m 644 -b -T config.example.yml /etc/proxyguy/config.yaml; fi
