@@ -76,6 +76,10 @@
                 "maven": {
                     "type": "boolean",
                     "default": false
+                },
+                "docker": {
+                    "type": "boolean",
+                    "default": false
                 }
             },
             "title": "Modules"

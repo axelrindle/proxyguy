@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"net/url"
 	"os"
@@ -21,6 +22,8 @@ type Options struct {
 	startServer bool
 	verbosity   string
 }
+
+var ERR_NO_PROXY = errors.New("NO_PROXY")
 
 func main() {
 	os.Unsetenv("http_proxy")
@@ -69,17 +72,28 @@ func main() {
 		server := &server.Server{Logger: logger, Config: cfg}
 		server.Start()
 	} else {
+		mdls := []modules.Module{
+			*modules.TemplateMain,
+			*modules.TemplateMaven,
+			*modules.TemplateDocker,
+		}
+
 		u, err := FindProxy(logger, cfg)
-		if err != nil {
+		if err == ERR_NO_PROXY {
+			for _, mdl := range mdls {
+				if mdl.OnNoProxy == nil {
+					continue
+				}
+
+				mdl.OnNoProxy()
+			}
+
+			os.Exit(0)
+		} else if err != nil {
 			logger.Fatal(err)
 		}
 
 		data := &modules.Exports{Host: u.Hostname(), Port: u.Port(), NoProxy: cfg.Proxy.NoProxy}
-
-		mdls := []modules.Module{
-			*modules.TemplateMain,
-			*modules.TemplateMaven,
-		}
 
 		for _, mdl := range mdls {
 			if !mdl.IsEnabled(cfg.Modules) {
@@ -105,7 +119,7 @@ func FindProxy(logger *logrus.Logger, cfg *config.Structure) (*url.URL, error) {
 
 	if !p.CheckConnectivity() {
 		logger.Debugln("Proxy is inactive. Environment will be left unchanged.")
-		os.Exit(0)
+		return nil, ERR_NO_PROXY
 	}
 
 	err := p.LoadPacScript()

@@ -12,7 +12,8 @@ type StructureProxy struct {
 }
 
 type StructureModules struct {
-	Maven bool `yaml:"maven"`
+	Maven  bool `yaml:"maven"`
+	Docker bool `yaml:"docker"`
 }
 
 type Structure struct {
