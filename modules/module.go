@@ -19,10 +19,12 @@ type Module struct {
 
 	IsEnabled  func(cfg config.StructureModules) bool
 	Preprocess func(data Exports) Exports
+
+	OnNoProxy func()
 }
 
 func Process(mdl Module, data Exports) bool {
-	tmpl, err := template.New("env").Parse(mdl.Template)
+	tmpl, err := template.New(mdl.Name).Parse(mdl.Template)
 	if err != nil {
 		return false
 	}
