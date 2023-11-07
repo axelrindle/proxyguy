@@ -12,8 +12,8 @@ type StructureProxy struct {
 }
 
 type StructureModules struct {
-	Maven  bool `yaml:"maven"`
-	Docker bool `yaml:"docker"`
+	Maven  bool `yaml:"maven" env:"MAVEN"`
+	Docker bool `yaml:"docker" env:"DOCKER"`
 }
 
 type Structure struct {
@@ -21,5 +21,5 @@ type Structure struct {
 	Timeout uint             `yaml:"timeout" env:"TIMEOUT" env-default:"1000"`
 	Proxy   StructureProxy   `yaml:"proxy" env-prefix:"PROXY_"`
 	Server  StructureServer  `yaml:"server" env-prefix:"SERVER_"`
-	Modules StructureModules `yaml:"modules"`
+	Modules StructureModules `yaml:"modules" env-prefix:"MODULES_"`
 }
