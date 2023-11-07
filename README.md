@@ -20,6 +20,59 @@ Help is available using
 proxyguy --help
 ```
 
+## Modules
+
+The program supports several built-in "modules", extending functionality for certain other programs or services.
+
+Each module must be enabled separately.
+
+### Maven
+
+Will set the `MAVEN_OPTS` variable with the determined proxy endpoint.
+
+Example:
+
+```
+-Dhttp.proxyHost=10.11.12.13 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.11.12.13 -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.0.0.1|example.org|*.example.org
+```
+
+### Docker
+
+Will modify the config file at `$HOME/.docker/config.json` and set or unset the `proxies.default`
+values as [stated in the documentation](https://docs.docker.com/network/proxy/#configure-the-docker-client).
+
+Beware that this config only applies to the Docker Client and thus containers started using it.
+
+**To make the Docker Server use the proxy, use the following configuration:**
+
+1. Create the file `/etc/systemd/system/docker.service.d`
+
+```ini
+[Service]
+ExecStart=
+ExecStart=/usr/local/bin/docker-wrapper.sh
+```
+
+2. Create the file `/usr/local/bin/docker-wrapper.sh`:
+
+```shell
+eval $( proxyguy )
+```
+
+3. Reload systemd
+
+```shell
+systemctl daemon-reload
+```
+
+4. Restart the Docker service
+
+```shell
+systemctl restart docker.service
+```
+
+If you're not using Systemd, just make sure the Docker process sources the output of **step 2**.
+
 ## Configuration
 
 Configuration can be done by either using a YAML file or environment variables.
@@ -33,6 +86,8 @@ You should use the YAML file for local installations and environment variables f
 | proxy.override | PROXY_OVERRIDE | | Defines a static proxy endpoint. Will disable the PAC resolution. |
 | proxy.ignore | PROXY_IGNORE | `localhost,127.0.0.1` | Defines the value for the `NO_PROXY` variable, urls and hosts to directly connect to. |
 | proxy.determine-url | PROXY_DETERMINE | `https://ubuntu.com` | An url used to find the proxy endpoint to use. Should be a publicly available address. |
+| modules.maven | MODULES_MAVEN | `false` | Enabled the Maven module. |
+| modules.docker | MODULES_DOCKER | `false` | Enabled the Docker module. |
 | server.address | SERVER_ADDRESS | `0.0.0.0` | On which address the server should bind. |
 | server.port | SERVER_PORT | `1337` | The port to listen on. |
 
@@ -41,7 +96,7 @@ You should use the YAML file for local installations and environment variables f
 Place the following line somewhere in your `.bashrc` file:
 
 ```shell
-eval $( proxyguy -quiet )
+eval $( proxyguy )
 ```
 
 The following environment variables will be automatically configured in every shell session:
