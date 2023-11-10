@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/axelrindle/proxyguy/config"
 	"github.com/axelrindle/proxyguy/modules"
@@ -21,9 +22,15 @@ type Options struct {
 	printConfig bool
 	startServer bool
 	verbosity   string
+	version     bool
 }
 
 var ERR_NO_PROXY = errors.New("NO_PROXY")
+
+var (
+	version   string = "dev"
+	buildTime string = time.Now().Local().Format(time.RFC822)
+)
 
 func main() {
 	os.Unsetenv("http_proxy")
@@ -38,6 +45,7 @@ func main() {
 	flag.BoolVar(&opts.printConfig, "print-config", false, "Print the effective config and exit.")
 	flag.BoolVar(&opts.startServer, "server", false, "Whether to start the integrated proxy server.")
 	flag.StringVar(&opts.verbosity, "verbosity", "", "Specify verbosity level.")
+	flag.BoolVar(&opts.version, "version", false, "Print the binary version and exit.")
 	flag.Parse()
 
 	logger := logrus.New()
@@ -58,6 +66,12 @@ func main() {
 		default:
 			logger.Warnf("Invalid verbosity level \"%s\"!", opts.verbosity)
 		}
+	}
+
+	if opts.version {
+		println("proxyguy version " + version)
+		println("build time was " + buildTime)
+		return
 	}
 
 	config := &config.Config{Logger: logger, File: &opts.configFile}

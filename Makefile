@@ -1,4 +1,5 @@
 OUTPUT ?= dist
+VERSION ?= nightly
 
 
 default: build
@@ -7,7 +8,9 @@ clean:
 	@rm -rf $(OUTPUT)
 
 build: clean
-	go build -ldflags="-s -w" -o $(OUTPUT)/proxyguy .
+	go build \
+		-ldflags="-s -w -X main.version=$(VERSION) -X main.buildTime=`date +'%Y-%m-%d_%T'`" \
+		-o $(OUTPUT)/proxyguy .
 
 test:
 	go test -v -cover -coverprofile=coverage.out ./...

@@ -24,6 +24,7 @@ jobs:
         run: make build
         env:
           OUTPUT: dist/${{ github.event.repository.name }}-${{ github.ref_name }}
+          VERSION: ${{ github.ref_name }}
 
       - id: extract-changelog
         uses: sean0x42/markdown-extract@v2
