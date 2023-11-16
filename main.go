@@ -89,6 +89,7 @@ func main() {
 		mdls := []modules.Module{
 			*modules.TemplateMain,
 			*modules.TemplateMaven,
+			*modules.TemplateGradle,
 			*modules.TemplateDocker,
 		}
 

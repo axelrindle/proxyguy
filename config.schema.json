@@ -77,6 +77,10 @@
                     "type": "boolean",
                     "default": false
                 },
+                "gradle": {
+                    "type": "boolean",
+                    "default": false
+                },
                 "docker": {
                     "type": "boolean",
                     "default": false

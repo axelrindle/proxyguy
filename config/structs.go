@@ -13,6 +13,7 @@ type StructureProxy struct {
 
 type StructureModules struct {
 	Maven  bool `yaml:"maven" env:"MAVEN"`
+	Gradle bool `yaml:"gradle" env:"GRADLE"`
 	Docker bool `yaml:"docker" env:"DOCKER"`
 }
 
