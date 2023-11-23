@@ -2,6 +2,7 @@ package modules
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -20,8 +21,8 @@ func loadConfig() conf {
 	configFile := getConfigFile()
 	store := &conf{}
 
-	file, err := os.OpenFile(configFile, os.O_RDONLY, 0)
-	if err != nil {
+	file, err := os.OpenFile(configFile, os.O_SYNC|os.O_RDONLY, 0)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		os.Stderr.Write([]byte("Failed loading Docker config from " + configFile + "!"))
 	}
 	defer file.Close()
@@ -39,7 +40,7 @@ func writeConfig(store *conf) error {
 		return err
 	}
 
-	file, err := os.OpenFile(configFile, os.O_RDWR, 0)
+	file, err := os.OpenFile(configFile, os.O_SYNC|os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0)
 	if err != nil {
 		os.Stderr.Write([]byte("Failed loading Docker config from " + configFile + "!"))
 	}
