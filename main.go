@@ -96,10 +96,6 @@ func main() {
 		u, err := FindProxy(logger, cfg)
 		if err == ERR_NO_PROXY {
 			for _, mdl := range mdls {
-				if mdl.OnNoProxy == nil {
-					continue
-				}
-
 				mdl.OnNoProxy()
 			}
 
