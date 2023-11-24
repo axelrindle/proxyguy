@@ -86,8 +86,10 @@ You should use the YAML file for local installations and environment variables f
 | proxy.override | PROXY_OVERRIDE | | Defines a static proxy endpoint. Will disable the PAC resolution. |
 | proxy.ignore | PROXY_IGNORE | `localhost,127.0.0.1` | Defines the value for the `NO_PROXY` variable, urls and hosts to directly connect to. |
 | proxy.determine-url | PROXY_DETERMINE | `https://ubuntu.com` | An url used to find the proxy endpoint to use. Should be a publicly available address. |
-| modules.maven | MODULES_MAVEN | `false` | Enabled the Maven module. |
-| modules.docker | MODULES_DOCKER | `false` | Enabled the Docker module. |
+| modules.main | MODULES_MAIN | `true` | Enable the Main module. |
+| modules.maven | MODULES_MAVEN | `false` | Enable the Maven module. |
+| modules.gradle | MODULES_GRADLE | `false` | Enable the Gradle module. |
+| modules.docker | MODULES_DOCKER | `false` | Enable the Docker module. |
 | server.address | SERVER_ADDRESS | `0.0.0.0` | On which address the server should bind. |
 | server.port | SERVER_PORT | `1337` | The port to listen on. |
 
@@ -99,7 +101,7 @@ Place the following line somewhere in your `.bashrc` file:
 eval $( proxyguy )
 ```
 
-The following environment variables will be automatically configured in every shell session:
+The following environment variables will be automatically configured in every shell session if the **Main module** is enabled:
 
 - `http_proxy`
 - `https_proxy`
