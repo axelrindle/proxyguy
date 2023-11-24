@@ -5,6 +5,7 @@ go 1.21.3
 require (
 	github.com/darren/gpac v0.0.0-20210609082804-b56d6523a3af
 	github.com/ilyakaznacheev/cleanenv v1.5.0
+	github.com/magiconair/properties v1.8.7
 	github.com/sirupsen/logrus v1.9.3
 	gobn.github.io/coalesce v1.0.2
 	gopkg.in/elazarl/goproxy.v1 v1.0.0-20180725130230-947c36da3153
