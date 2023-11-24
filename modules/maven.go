@@ -6,32 +6,40 @@ import (
 	"github.com/axelrindle/proxyguy/config"
 )
 
-const tpl_maven = `
+const tplMaven = `
 export MAVEN_OPTS="-Dhttp.proxyHost={{.Host}} -Dhttp.proxyPort={{.Port}} -Dhttps.proxyHost={{.Host}} -Dhttps.proxyPort={{.Port}} -Dhttp.nonProxyHosts={{.NoProxy}}"
 `
 
-var TemplateMaven = &Module{
-	Name:     "Maven",
-	Template: tpl_maven,
+type TemplateMaven struct {
+}
 
-	IsEnabled: func(cfg config.StructureModules) bool {
-		return cfg.Maven
-	},
-	Preprocess: func(data Exports) Exports {
-		// follow the specification at https://docs.oracle.com/javase/8/docs/api/java/net/doc-files/net-properties.html
-		// transform separator "," to "|"
-		// use "*" as wildcard
+func (t TemplateMaven) GetName() string {
+	return "Maven"
+}
 
-		split := strings.Split(data.NoProxy, ",")
+func (t TemplateMaven) GetTemplate() string {
+	return tplMaven
+}
 
-		for i, s := range split {
-			if strings.HasPrefix(s, ".") {
-				split[i] = "*" + s
-			}
+func (t TemplateMaven) IsEnabled(cfg config.StructureModules) bool {
+	return cfg.Maven
+}
+
+func (t TemplateMaven) Preprocess(data *Exports) {
+	// follow the specification at https://docs.oracle.com/javase/8/docs/api/java/net/doc-files/net-properties.html
+	// transform separator "," to "|"
+	// use "*" as wildcard
+
+	split := strings.Split(data.NoProxy, ",")
+
+	for i, s := range split {
+		if strings.HasPrefix(s, ".") {
+			split[i] = "*" + s
 		}
+	}
 
-		data.NoProxy = strings.Join(split, "|")
+	data.NoProxy = strings.Join(split, "|")
+}
 
-		return data
-	},
+func (t TemplateMaven) OnNoProxy() {
 }

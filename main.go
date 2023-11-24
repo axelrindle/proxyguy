@@ -87,10 +87,10 @@ func main() {
 		server.Start()
 	} else {
 		mdls := []modules.Module{
-			*modules.TemplateMain,
-			*modules.TemplateMaven,
-			*modules.TemplateGradle,
-			*modules.TemplateDocker,
+			modules.TemplateMain{},
+			modules.TemplateMaven{},
+			modules.TemplateGradle{Logger: logger},
+			modules.TemplateDocker{Logger: logger},
 		}
 
 		u, err := FindProxy(logger, cfg)
@@ -115,15 +115,15 @@ func main() {
 				continue
 			}
 
-			var theData modules.Exports
-			if mdl.Preprocess != nil {
-				theData = mdl.Preprocess(*data)
-			} else {
-				theData = *data
-			}
+			moduleLogger := logger.WithField("module", mdl.GetName())
+			moduleData := data
 
-			if !modules.Process(mdl, theData) {
-				logger.Errorf("Failed parsing template \"%s\"!", mdl.Name)
+			moduleLogger.Debug("Running pre-processor")
+			mdl.Preprocess(moduleData)
+
+			moduleLogger.Debug("Running main processor")
+			if !modules.Process(mdl, *moduleData) {
+				logger.Errorf("Failed parsing template \"%s\"!", mdl.GetName())
 			}
 		}
 	}

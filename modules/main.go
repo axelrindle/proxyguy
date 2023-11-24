@@ -11,11 +11,23 @@ export HTTPS_PROXY="http://{{.Host}}:{{.Port}}"
 export NO_PROXY="{{.NoProxy}}"
 `
 
-var TemplateMain = &Module{
-	Name:     "Main",
-	Template: tpl_main,
+type TemplateMain struct {
+}
 
-	IsEnabled: func(cfg config.StructureModules) bool {
-		return true
-	},
+func (t TemplateMain) GetName() string {
+	return "Main"
+}
+
+func (t TemplateMain) GetTemplate() string {
+	return tpl_main
+}
+
+func (t TemplateMain) IsEnabled(cfg config.StructureModules) bool {
+	return true
+}
+
+func (t TemplateMain) Preprocess(data *Exports) {
+}
+
+func (t TemplateMain) OnNoProxy() {
 }

@@ -13,18 +13,23 @@ type Exports struct {
 	NoProxy string
 }
 
-type Module struct {
-	Name     string
-	Template string
+type Module interface {
+	GetName() string
+	GetTemplate() string
 
-	IsEnabled  func(cfg config.StructureModules) bool
-	Preprocess func(data Exports) Exports
+	IsEnabled(cfg config.StructureModules) bool
 
-	OnNoProxy func()
+	Preprocess(data *Exports)
+	OnNoProxy()
 }
 
 func Process(mdl Module, data Exports) bool {
-	tmpl, err := template.New(mdl.Name).Parse(mdl.Template)
+	tmplStr := mdl.GetTemplate()
+	if tmplStr == "" {
+		return true
+	}
+
+	tmpl, err := template.New(mdl.GetName()).Parse(tmplStr)
 	if err != nil {
 		return false
 	}
