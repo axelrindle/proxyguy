@@ -1,0 +1,33 @@
+{
+    "Module Template": {
+        "scope": "go",
+        "prefix": "module",
+        "body": [
+            "const tpl$1 = `",
+            "export http_proxy=\"http://{{.Host}}:{{.Port}}\"",
+            "export https_proxy=\"http://{{.Host}}:{{.Port}}\"",
+            "export no_proxy=\"{{.NoProxy}}\"",
+            "`",
+            "type Template$1 struct {",
+            "}",
+            "",
+            "func (t Template$1) GetName() string {",
+            "\treturn \"$1\"",
+            "}",
+            "",
+            "func (t Template$1) GetTemplate() string {",
+            "\treturn tpl$1",
+            "}",
+            "",
+            "func (t Template$1) IsEnabled(cfg config.StructureModules) bool {",
+            "\treturn true",
+            "}",
+            "",
+            "func (t Template$1) Preprocess(data *Exports) {",
+            "}",
+            "",
+            "func (t Template$1) OnNoProxy() {",
+            "}",
+        ]
+    }
+}
