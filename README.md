@@ -36,6 +36,14 @@ Example:
 -Dhttp.proxyHost=10.11.12.13 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=10.11.12.13 -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.0.0.1|example.org|*.example.org
 ```
 
+### Gradle
+
+Will modify the global properties file at `$HOME/.gradle/gradle.properties` and set the system properties
+analogous to the `MAVEN_OPTS` variable.
+
+**Why not set the `GRADLE_OPTS` variable?**. Because that doesn't work when using IntelliJ IDEA. I didn't figure out why, but I guess IntelliJ executes the Gradle process with a limited set of environment variables.
+Setting the properties via the `gradle.properties` file does work.
+
 ### Docker
 
 Will modify the config file at `$HOME/.docker/config.json` and set or unset the `proxies.default`
