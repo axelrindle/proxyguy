@@ -12,6 +12,7 @@ type StructureProxy struct {
 }
 
 type StructureModules struct {
+	Main   bool `yaml:"main" env:"MAIN" env-default:"true"`
 	Maven  bool `yaml:"maven" env:"MAVEN"`
 	Gradle bool `yaml:"gradle" env:"GRADLE"`
 	Docker bool `yaml:"docker" env:"DOCKER"`

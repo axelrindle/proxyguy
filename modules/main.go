@@ -23,7 +23,7 @@ func (t TemplateMain) GetTemplate() string {
 }
 
 func (t TemplateMain) IsEnabled(cfg config.StructureModules) bool {
-	return true
+	return cfg.Main
 }
 
 func (t TemplateMain) Preprocess(data *Exports) {

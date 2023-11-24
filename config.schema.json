@@ -73,6 +73,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "main": {
+                    "type": "boolean",
+                    "default": true
+                },
                 "maven": {
                     "type": "boolean",
                     "default": false
