@@ -112,13 +112,13 @@ func main() {
 			}
 
 			moduleLogger := logger.WithField("module", mdl.GetName())
-			moduleData := data
+			moduleData := *data
 
 			moduleLogger.Debug("Running pre-processor")
-			mdl.Preprocess(moduleData)
+			mdl.Preprocess(&moduleData)
 
 			moduleLogger.Debug("Running main processor")
-			if !modules.Process(mdl, *moduleData) {
+			if !modules.Process(mdl, moduleData) {
 				logger.Errorf("Failed parsing template \"%s\"!", mdl.GetName())
 			}
 		}
