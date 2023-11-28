@@ -33,12 +33,6 @@ func (t TemplateGradle) Preprocess(data *Exports) {
 		t.Logger.Debugf(fmt, args)
 	}
 
-	p, err := loadFile()
-	if err != nil {
-		t.Logger.Error(err)
-		return
-	}
-
 	t.doWithProperties(func(p *properties.Properties) {
 		p.Set("systemProp.http.proxyHost", data.Host)
 		p.Set("systemProp.http.proxyPort", data.Port)
@@ -46,18 +40,14 @@ func (t TemplateGradle) Preprocess(data *Exports) {
 		p.Set("systemProp.https.proxyPort", data.Port)
 		p.Set("systemProp.http.nonProxyHosts", data.NoProxy)
 	})
-
-	err = saveFile(p)
-	if err != nil {
-		t.Logger.Error(err)
-		return
-	}
-
-	t.Logger.Debug("Written global gradle.properties")
 }
 
 func (t TemplateGradle) OnNoProxy() {
 	// remove props from global gradle.properties
+	properties.LogPrintf = func(fmt string, args ...interface{}) {
+		t.Logger.Debugf(fmt, args)
+	}
+
 	t.doWithProperties(func(p *properties.Properties) {
 		p.Delete("systemProp.http.proxyHost")
 		p.Delete("systemProp.http.proxyPort")
