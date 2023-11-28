@@ -25,7 +25,7 @@ type Options struct {
 	version     bool
 }
 
-var ERR_NO_PROXY = errors.New("NO_PROXY")
+var ErrNoProxy = errors.New("NO_PROXY")
 
 var (
 	version   string = "dev"
@@ -94,7 +94,7 @@ func main() {
 		}
 
 		u, err := FindProxy(logger, cfg)
-		if err == ERR_NO_PROXY {
+		if err == ErrNoProxy {
 			for _, mdl := range mdls {
 				mdl.OnNoProxy()
 			}
@@ -130,7 +130,7 @@ func FindProxy(logger *logrus.Logger, cfg *config.Structure) (*url.URL, error) {
 
 	if !p.CheckConnectivity() {
 		logger.Debugln("Proxy is inactive. Environment will be left unchanged.")
-		return nil, ERR_NO_PROXY
+		return nil, ErrNoProxy
 	}
 
 	err := p.LoadPacScript()
