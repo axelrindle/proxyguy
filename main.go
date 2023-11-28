@@ -96,6 +96,10 @@ func main() {
 		u, err := FindProxy(logger, cfg)
 		if err == ErrNoProxy {
 			for _, mdl := range mdls {
+				if !mdl.IsEnabled(cfg.Modules) {
+					continue
+				}
+
 				mdl.OnNoProxy()
 			}
 
