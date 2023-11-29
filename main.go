@@ -132,8 +132,13 @@ func main() {
 func FindProxy(logger *logrus.Logger, cfg *config.Structure) (*url.URL, error) {
 	p := &pac.Pac{Logger: logger, Config: cfg}
 
+	logLevel := logrus.DebugLevel
+	if cfg.StatusInfo {
+		logLevel = logrus.InfoLevel
+	}
+
 	if !p.CheckConnectivity() {
-		logger.Debugln("Proxy is inactive. Environment will be left unchanged.")
+		logger.Logln(logLevel, "Proxy is inactive. Environment will be left unchanged.")
 		return nil, ErrNoProxy
 	}
 
@@ -148,7 +153,7 @@ func FindProxy(logger *logrus.Logger, cfg *config.Structure) (*url.URL, error) {
 	}
 
 	u := pac.TrimProxy(parts[0]) // TODO: Make sure not DIRECT
-	logger.Debugln("Using \"" + u + "\" as proxy endpoint.")
+	logger.Logln(logLevel, "Using \""+u+"\" as proxy endpoint.")
 
 	return url.Parse("http://" + u)
 }

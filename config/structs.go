@@ -19,9 +19,10 @@ type StructureModules struct {
 }
 
 type Structure struct {
-	PacUrl  string           `yaml:"pac" env:"PAC"`
-	Timeout uint             `yaml:"timeout" env:"TIMEOUT" env-default:"1000"`
-	Proxy   StructureProxy   `yaml:"proxy" env-prefix:"PROXY_"`
-	Server  StructureServer  `yaml:"server" env-prefix:"SERVER_"`
-	Modules StructureModules `yaml:"modules" env-prefix:"MODULES_"`
+	PacUrl     string           `yaml:"pac" env:"PAC"`
+	Timeout    uint             `yaml:"timeout" env:"TIMEOUT" env-default:"1000"`
+	StatusInfo bool             `yaml:"status-info" env:"STATUS_INFO"`
+	Proxy      StructureProxy   `yaml:"proxy" env-prefix:"PROXY_"`
+	Server     StructureServer  `yaml:"server" env-prefix:"SERVER_"`
+	Modules    StructureModules `yaml:"modules" env-prefix:"MODULES_"`
 }

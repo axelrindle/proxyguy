@@ -16,6 +16,10 @@
                     "type": "integer",
                     "default": 1000
                 },
+                "status-info": {
+                    "type": "boolean",
+                    "default": true
+                },
                 "proxy": {
                     "$ref": "#/definitions/Proxy"
                 },
