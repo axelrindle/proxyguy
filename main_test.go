@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/axelrindle/proxyguy/config"
-	"github.com/sirupsen/logrus"
 )
 
 const pacScript = `
@@ -49,8 +48,6 @@ func TestMain(m *testing.M) {
 	stopServer()
 	os.Exit(code)
 }
-
-var logger *logrus.Logger = logrus.New()
 
 func TestProcessing(t *testing.T) {
 	cfg := &config.Structure{

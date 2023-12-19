@@ -30,6 +30,8 @@ var ErrNoProxy = errors.New("NO_PROXY")
 var (
 	version   string = "dev"
 	buildTime string = time.Now().Local().Format(time.RFC822)
+
+	logger *logrus.Logger = logrus.New()
 )
 
 func main() {
@@ -48,7 +50,6 @@ func main() {
 	flag.BoolVar(&opts.version, "version", false, "Print the binary version and exit.")
 	flag.Parse()
 
-	logger := logrus.New()
 	logger.SetOutput(os.Stderr)
 	logger.SetLevel(logrus.InfoLevel)
 	logger.SetFormatter(&logrus.TextFormatter{
@@ -115,6 +116,7 @@ func main() {
 				continue
 			}
 
+			// TODO: Asign moduleLogger to the module
 			moduleLogger := logger.WithField("module", mdl.GetName())
 			moduleData := *data
 
