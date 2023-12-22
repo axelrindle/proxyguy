@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/caarlos0/env"
+	"github.com/caarlos0/env/v10"
 	"github.com/creasty/defaults"
 	"gopkg.in/yaml.v3"
 )

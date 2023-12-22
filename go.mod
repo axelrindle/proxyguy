@@ -3,7 +3,7 @@ module github.com/axelrindle/proxyguy
 go 1.21.3
 
 require (
-	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/caarlos0/env/v10 v10.0.0
 	github.com/creasty/defaults v1.7.0
 	github.com/darren/gpac v0.0.0-20210609082804-b56d6523a3af
 	github.com/magiconair/properties v1.8.7
