@@ -1,9 +1,9 @@
 VERSION ?= nightly
 
-OUTPUT_DIR ?= dist
-OUTPUT_FILE ?= proxyguy
+OUTPUT_DIR := dist
+OUTPUT_FILE := proxyguy
 
-OUTPUT := $(OUTPUT_DIR)/$(OUTPUT_FILE)
+OUTPUT ?= $(OUTPUT_DIR)/$(OUTPUT_FILE)
 
 default: build
 
@@ -16,7 +16,7 @@ build: clean
 		-o $(OUTPUT) .
 
 build-static:
-	CGO_ENABLED=0 OUTPUT=$(OUTPUT)-static build
+	CGO_ENABLED=0 make build
 
 build-all: build build-static
 
