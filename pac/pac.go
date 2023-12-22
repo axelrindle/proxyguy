@@ -10,14 +10,16 @@ import (
 	"time"
 
 	"github.com/axelrindle/proxyguy/config"
+	"github.com/axelrindle/proxyguy/logger"
 	"github.com/darren/gpac"
 	"github.com/sirupsen/logrus"
 	"gobn.github.io/coalesce"
 )
 
+var log *logrus.Entry = logger.ForComponent("pac")
+
 type Pac struct {
-	Logger *logrus.Logger
-	Config *config.Structure
+	Config config.Structure
 
 	script *string
 }
@@ -25,7 +27,7 @@ type Pac struct {
 func (p Pac) CheckConnectivity() bool {
 	theUrl, err := url.Parse(p.Config.PacUrl)
 	if err != nil {
-		p.Logger.Fatalln(err)
+		log.Fatalln(err)
 	}
 
 	hostWithoutPort := strings.Split(theUrl.Host, ":")[0]
@@ -49,7 +51,7 @@ func (p Pac) CheckConnectivity() bool {
 }
 
 func (p *Pac) LoadPacScript() error {
-	p.Logger.Debugln("Loading pac script from " + p.Config.PacUrl + "…")
+	log.Debugln("Loading pac script from " + p.Config.PacUrl + "…")
 
 	resp, err := http.Get(p.Config.PacUrl)
 	if err != nil {
@@ -80,15 +82,15 @@ func (p Pac) DetermineProxies(determineOverride *string) []string {
 
 	pac, err := gpac.New(*p.script)
 	if err != nil {
-		p.Logger.Fatalln(err)
+		log.Fatalln(err)
 	}
 
-	p.Logger.Debugln("Determining proxy endpoint…")
+	log.Debugln("Determining proxy endpoint…")
 
 	url := coalesce.String(determineOverride, &p.Config.Proxy.Determine)
 	proxies, err := pac.FindProxyForURL(*url)
 	if err != nil {
-		p.Logger.Fatalln(err)
+		log.Fatalln(err)
 	}
 
 	return strings.Split(proxies, ";")

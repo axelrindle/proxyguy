@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -13,40 +12,40 @@ import (
 	"time"
 
 	"github.com/axelrindle/proxyguy/config"
+	"github.com/axelrindle/proxyguy/logger"
 	"github.com/axelrindle/proxyguy/pac"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/elazarl/goproxy.v1"
 )
 
-type Server struct {
-	Logger *logrus.Logger
-	Config *config.Structure
+var log *logrus.Entry = logger.ForComponent("server")
 
+type Server struct {
 	proxy *goproxy.ProxyHttpServer
 	p     *pac.Pac
 	cache *Cache
 }
 
 func (s *Server) Start() {
-	s.Logger.ExitFunc = func(code int) {
+	log.Logger.ExitFunc = func(code int) {
 		// ignore
 	}
 
-	s.p = &pac.Pac{Logger: s.Logger, Config: s.Config}
+	s.p = &pac.Pac{}
 
 	s.cache = &Cache{Pac: s.p}
 	s.cache.Init()
 	s.cache.Update()
 
 	s.proxy = goproxy.NewProxyHttpServer()
-	s.proxy.Logger = log.New(s.Logger.Out, "", 0)
-	s.proxy.Verbose = s.Logger.IsLevelEnabled(logrus.DebugLevel)
+	s.proxy.Verbose = log.Logger.IsLevelEnabled(logrus.DebugLevel)
 
 	s.proxy.OnRequest().DoFunc(s.http)
 	s.proxy.ConnectDial = s.connectDial
 
-	address := fmt.Sprintf("%s:%v", s.Config.Server.Address, s.Config.Server.Port)
-	s.Logger.Println("Starting proxy server on " + address + "…")
+	cfg := config.Data()
+	address := fmt.Sprintf("%s:%v", cfg.Server.Address, cfg.Server.Port)
+	log.Println("Starting proxy server on " + address + "…")
 
 	server := http.Server{
 		Addr:    address,
@@ -56,12 +55,12 @@ func (s *Server) Start() {
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			s.Logger.Infoln("Server closed.")
-			s.Logger.Fatalln("Error starting proxy server: ", err)
+			log.Infoln("Server closed.")
+			log.Fatalln("Error starting proxy server: ", err)
 		}
 	}()
 
-	<-GracefulShutdown(context.Background(), 5*time.Second, s.Logger, map[string]ShutdownHook{
+	<-GracefulShutdown(context.Background(), 5*time.Second, log.Logger, map[string]ShutdownHook{
 		"Server": func(ctx context.Context) error {
 			server.Shutdown(ctx)
 			return nil
@@ -81,7 +80,7 @@ func (s Server) connectDial(network, addr string) (net.Conn, error) {
 		for _, target := range targets {
 			if target != "DIRECT" && target != "" {
 				stripped := pac.TrimProxy(target)
-				s.Logger.Traceln("Trying \"" + stripped + "\"")
+				log.Traceln("Trying \"" + stripped + "\"")
 
 				fun := s.proxy.NewConnectDialToProxy("http://" + stripped)
 				if fun == nil {
@@ -114,7 +113,7 @@ func (s Server) http(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *
 	if s.p.CheckConnectivity() {
 		ctx.RoundTripper = goproxy.RoundTripperFunc(s.roundTrip)
 	} else {
-		s.Logger.Debugln("Proxy inactive.")
+		log.Debugln("Proxy inactive.")
 	}
 
 	return req, nil
@@ -136,10 +135,10 @@ func (s Server) roundTrip(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Respo
 
 		if target != "DIRECT" && target != "" {
 			stripped := strings.Trim(strings.Replace(target, "PROXY", "", 1), " ")
-			s.Logger.Traceln("Trying \"" + stripped + "\"")
+			log.Traceln("Trying \"" + stripped + "\"")
 			parsedUrl, err := url.Parse("http://" + stripped)
 			if err != nil {
-				s.Logger.Debugln(err)
+				log.Debugln(err)
 				continue
 			}
 

@@ -11,6 +11,7 @@ export MAVEN_OPTS="-Dhttp.proxyHost={{.Host}} -Dhttp.proxyPort={{.Port}} -Dhttps
 `
 
 type TemplateMaven struct {
+	DefaultModule
 }
 
 func (t TemplateMaven) GetName() string {
@@ -39,7 +40,4 @@ func (t TemplateMaven) Preprocess(data *Exports) {
 	}
 
 	data.NoProxy = strings.Join(split, "|")
-}
-
-func (t TemplateMaven) OnNoProxy() {
 }

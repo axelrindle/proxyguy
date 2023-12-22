@@ -1,6 +1,8 @@
 package modules
 
-import "github.com/axelrindle/proxyguy/config"
+import (
+	"github.com/axelrindle/proxyguy/config"
+)
 
 const tpl_main = `
 export http_proxy="http://{{.Host}}:{{.Port}}"
@@ -12,6 +14,7 @@ export NO_PROXY="{{.NoProxy}}"
 `
 
 type TemplateMain struct {
+	DefaultModule
 }
 
 func (t TemplateMain) GetName() string {
@@ -24,10 +27,4 @@ func (t TemplateMain) GetTemplate() string {
 
 func (t TemplateMain) IsEnabled(cfg config.StructureModules) bool {
 	return cfg.Main
-}
-
-func (t TemplateMain) Preprocess(data *Exports) {
-}
-
-func (t TemplateMain) OnNoProxy() {
 }

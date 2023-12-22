@@ -6,21 +6,16 @@ import (
 
 	"github.com/axelrindle/proxyguy/config"
 	"github.com/magiconair/properties"
-	"github.com/sirupsen/logrus"
 )
 
 const gradleProperties = ".gradle/gradle.properties"
 
 type TemplateGradle struct {
-	Logger *logrus.Logger
+	DefaultModule
 }
 
 func (t TemplateGradle) GetName() string {
 	return "Gradle"
-}
-
-func (t TemplateGradle) GetTemplate() string {
-	return ""
 }
 
 func (t TemplateGradle) IsEnabled(cfg config.StructureModules) bool {
@@ -30,7 +25,7 @@ func (t TemplateGradle) IsEnabled(cfg config.StructureModules) bool {
 func (t TemplateGradle) Preprocess(data *Exports) {
 	// add props to global gradle.properties
 	properties.LogPrintf = func(fmt string, args ...interface{}) {
-		t.Logger.Debugf(fmt, args)
+		t.GetLogger().Debugf(fmt, args)
 	}
 
 	t.doWithProperties(func(p *properties.Properties) {
@@ -45,7 +40,7 @@ func (t TemplateGradle) Preprocess(data *Exports) {
 func (t TemplateGradle) OnNoProxy() {
 	// remove props from global gradle.properties
 	properties.LogPrintf = func(fmt string, args ...interface{}) {
-		t.Logger.Debugf(fmt, args)
+		t.GetLogger().Debugf(fmt, args)
 	}
 
 	t.doWithProperties(func(p *properties.Properties) {
@@ -59,12 +54,12 @@ func (t TemplateGradle) OnNoProxy() {
 
 func (t TemplateGradle) doWithProperties(handler func(p *properties.Properties)) {
 	properties.LogPrintf = func(fmt string, args ...interface{}) {
-		t.Logger.Debugf(fmt, args)
+		t.GetLogger().Debugf(fmt, args)
 	}
 
 	p, err := loadFile()
 	if err != nil {
-		t.Logger.Error(err)
+		t.GetLogger().Error(err)
 		return
 	}
 
@@ -72,11 +67,11 @@ func (t TemplateGradle) doWithProperties(handler func(p *properties.Properties))
 
 	err = saveFile(p)
 	if err != nil {
-		t.Logger.Error(err)
+		t.GetLogger().Error(err)
 		return
 	}
 
-	t.Logger.Debug("Written global gradle.properties")
+	t.GetLogger().Debug("Written global gradle.properties")
 }
 
 func loadFile() (*properties.Properties, error) {

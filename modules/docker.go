@@ -8,21 +8,16 @@ import (
 	"path"
 
 	"github.com/axelrindle/proxyguy/config"
-	"github.com/sirupsen/logrus"
 )
 
 type conf = map[string]any
 
 type TemplateDocker struct {
-	Logger *logrus.Logger
+	DefaultModule
 }
 
 func (t TemplateDocker) GetName() string {
 	return "Docker"
-}
-
-func (t TemplateDocker) GetTemplate() string {
-	return ""
 }
 
 func (t TemplateDocker) IsEnabled(cfg config.StructureModules) bool {
@@ -63,7 +58,7 @@ func (t TemplateDocker) loadConfig() conf {
 
 	file, err := os.OpenFile(configFile, os.O_SYNC|os.O_RDONLY, 0)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		os.Stderr.Write([]byte("Failed loading Docker config from " + configFile + "!"))
+		os.Stderr.Write([]byte("Failed loading Docker config from " + configFile + ": " + err.Error()))
 	}
 	defer file.Close()
 
