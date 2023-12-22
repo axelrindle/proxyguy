@@ -13,7 +13,7 @@ import (
 	"github.com/axelrindle/proxyguy/pac"
 	"github.com/axelrindle/proxyguy/server"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // flags

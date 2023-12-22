@@ -1,18 +1,18 @@
 package config
 
 type StructureServer struct {
-	Address string `yaml:"address" env:"ADDRESS" env-default:"0.0.0.0"`
-	Port    uint   `yaml:"port" env:"PORT" env-default:"1337"`
+	Address string `yaml:"address" env:"ADDRESS" default:"0.0.0.0"`
+	Port    uint   `yaml:"port" env:"PORT" default:"1337"`
 }
 
 type StructureProxy struct {
 	Override  string `yaml:"override" env:"OVERRIDE"`
-	NoProxy   string `yaml:"ignore" env:"IGNORE" env-default:"localhost,127.0.0.1"`
-	Determine string `yaml:"determine-url" env:"DETERMINE" env-default:"https://ubuntu.com"`
+	NoProxy   string `yaml:"ignore" env:"IGNORE" default:"localhost,127.0.0.1"`
+	Determine string `yaml:"determine-url" env:"DETERMINE" default:"https://ubuntu.com"`
 }
 
 type StructureModules struct {
-	Main   bool `yaml:"main" env:"MAIN" env-default:"true"`
+	Main   bool `yaml:"main" env:"MAIN" default:"true"`
 	Maven  bool `yaml:"maven" env:"MAVEN"`
 	Gradle bool `yaml:"gradle" env:"GRADLE"`
 	Docker bool `yaml:"docker" env:"DOCKER"`
