@@ -1,3 +1,5 @@
+PACKAGE := github.com/axelrindle/proxyguy
+TIMESTAMP := $(shell date +'%Y-%m-%d %T')
 VERSION ?= nightly
 
 OUTPUT_DIR := dist
@@ -12,7 +14,7 @@ clean:
 
 build: clean
 	go build -v \
-		-ldflags="-s -w -X main.version=$(VERSION) -X main.buildTime=`date +'%Y-%m-%d_%T'`" \
+		-ldflags="-s -w -X '$(PACKAGE)/cli.Version=$(VERSION)' -X '$(PACKAGE)/cli.BuildTime=$(TIMESTAMP)'" \
 		-o $(OUTPUT) .
 
 build-static:

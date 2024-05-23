@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/axelrindle/proxyguy/cli/commands"
 	"github.com/axelrindle/proxyguy/config"
@@ -13,8 +12,8 @@ import (
 )
 
 var (
-	version   = "dev"
-	buildTime = time.Now().Local().Format(time.RFC822)
+	Version   = "dev"
+	BuildTime = ""
 
 	logger = logrus.New()
 	cfg    = config.New("/etc/proxyguy/config.yaml")
@@ -34,7 +33,7 @@ var before cli.BeforeFunc = func(ctx *cli.Context) error {
 var app = &cli.App{
 	Name:    "proxyguy",
 	Usage:   "Dynamic proxy generator.",
-	Version: version,
+	Version: Version,
 
 	EnableBashCompletion: true,
 
@@ -80,7 +79,7 @@ var app = &cli.App{
 func Run() {
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		println("proxyguy version " + ctx.App.Version)
-		println("build time was " + buildTime)
+		println("build time was " + BuildTime)
 	}
 
 	err := app.Run(os.Args)
