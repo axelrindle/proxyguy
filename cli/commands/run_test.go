@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"net/http"
@@ -49,7 +49,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestProcessing(t *testing.T) {
+func TestFindProxy(t *testing.T) {
 	cfg := &config.Structure{
 		PacUrl: pacServer.URL,
 		Proxy: config.StructureProxy{
@@ -57,7 +57,7 @@ func TestProcessing(t *testing.T) {
 		},
 	}
 
-	url, _ := FindProxy(logger, cfg)
+	url, _ := findProxy(*cfg)
 
 	if url.Host != "proxy.example.com:8080" {
 		t.Fatal("Invalid proxy endpoint returned!")
